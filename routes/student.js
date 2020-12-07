@@ -46,6 +46,22 @@ studentRouter.get("/:id",(req,res)=>{
   })
 })
 
+studentRouter.post("/login",(req,res)=>{
+  let email = req.body.email; 
+  let password = req.body.password; 
+
+  Student.findOne({
+    email, 
+    password
+  },(err,data)=>{
+    if(err){
+      res.status(400).json({ message: "Wrong email or password", error: err });
+    } else {
+      res.status(200).json({ student: data });
+    }
+  })
+})
+
 studentRouter.post("/enroll", (req, res) => {
   let teacherID = req.body.teacher;
   let studentID = req.body.student;
