@@ -32,6 +32,7 @@ sampleRouter.post("/add", (req, res) => {
       noOfAyat: req.body.noOfAyat,
       joz2: req.body.joz2,
       avatar: req.body.avatar,
+      url: req.body.url
     },
     (err, ins) => {
       if (err) {
