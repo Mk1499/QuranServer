@@ -34,13 +34,15 @@ teacherRouter.get("/", (req, res) => {
 });
 
 teacherRouter.get("/:id", (req, res) => {
-  Teacher.find({_id:req.params.id}, (err, data) => {
-    if (err) {
-      res.status(400).json({ message: "teacher cannot found", error: err });
-    } else {
-      res.status(200).json({ teacher: data });
-    }
-  });
+  Teacher.find({ _id: req.params.id })
+    .populate("samples")
+    .exec((err, data) => {
+      if (err) {
+        res.status(400).json({ message: "teacher cannot found", error: err });
+      } else {
+        res.status(200).json({ teacher: data });
+      }
+    });
 });
 
 export default teacherRouter;
