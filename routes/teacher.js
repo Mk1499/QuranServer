@@ -9,6 +9,7 @@ teacherRouter.post("/add", (req, res) => {
   Teacher.create(
     {
       name: req.body.name,
+      arName: req.body.arName,
       email: req.body.email,
       password: req.body.password,
       avatar: req.body.avatar,

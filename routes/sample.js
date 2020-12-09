@@ -27,6 +27,7 @@ sampleRouter.post("/add", (req, res) => {
   Sample.create(
     {
       name: req.body.name,
+      arName: req.body.arName,
       teacher: req.body.teacher,
       duration: req.body.duration,
       noOfAyat: req.body.noOfAyat,
