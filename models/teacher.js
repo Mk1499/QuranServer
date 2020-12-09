@@ -31,6 +31,10 @@ const teacherSchema = mongoose.Schema({
     reviews:[{
         type:mongoose.Schema.Types.ObjectId , ref:'Review'
     }],
+    price:{
+        type:Number,
+        default:0
+    }
 
    
 })
