@@ -13,7 +13,8 @@ teacherRouter.post("/add", (req, res) => {
       email: req.body.email,
       password: req.body.password,
       avatar: req.body.avatar,
-      price:req.body.price
+      price:req.body.price,
+      role: 'teacher'
     },
     (err) => {
       if (err) {

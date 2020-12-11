@@ -13,6 +13,7 @@ studentRouter.post("/add", (req, res) => {
       email: req.body.email,
       password: req.body.password,
       avatar: req.body.avatar,
+      role:'student'
     },
 
     (err) => {

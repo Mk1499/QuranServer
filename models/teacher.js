@@ -34,6 +34,9 @@ const teacherSchema = mongoose.Schema({
     price:{
         type:Number,
         default:0
+    }, 
+    role:{
+        type:String
     }
 
    
