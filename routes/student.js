@@ -56,9 +56,13 @@ studentRouter.post("/login",(req,res)=>{
     password
   },(err,data)=>{
     if(err){
-      res.status(400).json({ message: "Wrong email or password", error: err });
-    } else {
+      res.status(400).json({ message: "An Error Happened", error: err });
+    } else if(data){
       res.status(200).json({ student: data });
+    }
+    else {
+      res.status(404).json({ message: "Wrong email or password" });
+
     }
   })
 })
