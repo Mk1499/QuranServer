@@ -16,11 +16,11 @@ studentRouter.post("/add", (req, res) => {
       role:'student'
     },
 
-    (err) => {
+    (err,student) => {
       if (err) {
         res.status(400).json({ message: "Student Not Created", error: err });
       } else {
-        res.status(200).json({ message: "Student Created" });
+        res.status(200).json({ message: "Student Created" , student});
       }
     }
   );

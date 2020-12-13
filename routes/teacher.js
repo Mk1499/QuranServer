@@ -13,14 +13,14 @@ teacherRouter.post("/add", (req, res) => {
       email: req.body.email,
       password: req.body.password,
       avatar: req.body.avatar,
-      price:req.body.price,
-      role: 'teacher'
+      price: req.body.price,
+      role: "teacher",
     },
-    (err) => {
+    (err, teacher) => {
       if (err) {
         res.status(400).json({ message: "teacher Not Created", error: err });
       } else {
-        res.status(200).json({ message: "teacher Created" });
+        res.status(200).json({ message: "teacher Created", teacher });
       }
     }
   );
