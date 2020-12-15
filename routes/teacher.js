@@ -43,7 +43,7 @@ teacherRouter.get("/:id", (req, res) => {
       if (err) {
         res.status(400).json({ message: "teacher cannot found", error: err });
       } else {
-        res.status(200).json({ teacher: data });
+        res.status(200).json(data[0]);
       }
     });
 });
