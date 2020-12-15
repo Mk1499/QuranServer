@@ -37,13 +37,15 @@ studentRouter.get("/", (req, res) => {
 });
 
 studentRouter.get("/:id", (req, res) => {
-  Student.find({ _id: req.params.id }, (err, data) => {
-    if (err) {
-      res.status(400).json({ message: "Students Not Listed", error: err });
-    } else {
-      res.status(200).json({ students: data });
-    }
-  });
+  Student.find({ _id: req.params.id })
+    .populate("teachers")
+    .exec((err, data) => {
+      if (err) {
+        res.status(400).json({ message: "Students Not Listed", error: err });
+      } else {
+        res.status(200).json({ students: data });
+      }
+    });
 });
 
 studentRouter.post("/login", (req, res) => {
