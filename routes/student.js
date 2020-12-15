@@ -50,12 +50,12 @@ studentRouter.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
 
-  Student.findOne(
-    {
-      email,
-      password,
-    },
-    (err, data) => {
+  Student.findOne({
+    email,
+    password,
+  })
+    .populate("teachers")
+    .exec((err, data) => {
       if (err) {
         res.status(400).json({ message: "An Error Happened", error: err });
       } else if (data) {
@@ -63,8 +63,7 @@ studentRouter.post("/login", (req, res) => {
       } else {
         res.status(404).json({ message: "Wrong email or password" });
       }
-    }
-  );
+    });
 });
 
 studentRouter.post("/enroll", (req, res) => {
