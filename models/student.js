@@ -1,30 +1,34 @@
-import mongoose from 'mongoose'; 
+import mongoose from "mongoose";
 
 const studentSchema = mongoose.Schema({
-    // _id : mongoose.Schema.Types.ObjectId,
-    email:{
-        type:String,
-        required:true
-    }, 
-    name:{
-        type:String,
-        required:true
-    }, 
-    password:{
-        type:String,
-        required:true
+  // _id : mongoose.Schema.Types.ObjectId,
+  email: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  avatar: {
+    type: String,
+    required: false,
+    default:
+      "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png",
+  },
+  teachers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Teacher",
     },
-    avatar:{
-        type:String,
-        required:false,
-        default:"https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"
-    }, 
-    teachers:[{
-        type:mongoose.Schema.Types.ObjectId , ref:'Teacher'
-    }],
-    role:{
-        type:String
-    }
-})
+  ],
+  role: {
+    type: String,
+  },
+});
 
-export default mongoose.model('Student',studentSchema); 
+export default mongoose.model("Student", studentSchema);

@@ -101,4 +101,39 @@ studentRouter.post("/enroll", (req, res) => {
   );
 });
 
+
+studentRouter.post("/unenroll", (req, res) => {
+  let teacherID = req.body.teacher;
+  let studentID = req.body.student;
+
+  Student.updateOne(
+    { _id: studentID },
+    { $pullAll: { teachers: [teacherID] } },
+    (err) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "Can't Remove Teacher from Student", error: err });
+      } else {
+        Teacher.updateOne(
+          { _id: teacherID },
+          { $pullAll: { students: [studentID] } },
+          (err) => {
+            if (err) {
+              res
+                .status(400)
+                .json({
+                  message: "Can't Remove Student from Teacher ",
+                  error: err,
+                });
+            } else {
+              res.status(200).json({ message: "Student UnEnrolled Successfully" });
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
 export default studentRouter;
