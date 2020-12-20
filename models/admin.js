@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const studentSchema = mongoose.Schema({
+const adminSchema = mongoose.Schema({
   // _id : mongoose.Schema.Types.ObjectId,
   email: {
     type: String,
@@ -20,16 +20,10 @@ const studentSchema = mongoose.Schema({
     default:
       "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png",
   },
-  teachers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Teacher",
-    },
-  ],
   role: {
     type: String,
-    default:"Student"
+    default:"Admin"
   },
 });
 
-export default mongoose.model("Student", studentSchema);
+export default mongoose.model("Admin", adminSchema);

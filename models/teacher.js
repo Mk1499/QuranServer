@@ -36,7 +36,8 @@ const teacherSchema = mongoose.Schema({
         default:0
     }, 
     role:{
-        type:String
+        type:String ,
+        default:"Teacher"
     }
 
    
