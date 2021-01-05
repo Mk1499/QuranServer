@@ -43,7 +43,7 @@ studentRouter.get("/:id", (req, res) => {
       if (err) {
         res.status(400).json({ message: "Students Not Listed", error: err });
       } else {
-        res.status(200).json( data[0] );
+        res.status(200).json(data[0]);
       }
     });
 });
@@ -52,20 +52,31 @@ studentRouter.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
 
-  Student.findOne({
-    email,
-    password,
-  })
-    .populate("teachers")
-    .exec((err, data) => {
-      if (err) {
-        res.status(400).json({ message: "An Error Happened", error: err });
-      } else if (data) {
-        res.status(200).json({ student: data });
-      } else {
-        res.status(404).json({ message: "Wrong email or password" });
-      }
-    });
+  if (email && password) {
+    let enhEmail = email.toLowerCase();
+
+    Student.findOne({
+      email: enhEmail,
+      password,
+    })
+      .populate("teachers")
+      .exec((err, data) => {
+        if (err) {
+          res.status(400).json({ message: "An Error Happened", error: err });
+        } else if (data) {
+          res.status(200).json({ student: data });
+        } else {
+          res.status(404).json({ message: "Wrong email or password" });
+        }
+      });
+  } else {
+    res
+      .status(400)
+      .json({
+        message: "An Error Happened",
+        error: "Email and Password Both Required",
+      });
+  }
 });
 
 studentRouter.post("/enroll", (req, res) => {
