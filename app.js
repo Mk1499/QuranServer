@@ -8,7 +8,9 @@ import studentRouter from './routes/student.js'
 import teacherRouter from './routes/teacher.js'
 import reviewRouter from './routes/review.js'
 import sampleRouter from './routes/sample.js'
-import adminRouter from './routes/admin.js'
+import adminRouter from './routes/admin.js'; 
+import enrollRouter from './routes/enroll.js'; 
+
 
 
 
@@ -36,6 +38,7 @@ app.use('/teacher',teacherRouter);
 app.use('/review',reviewRouter);
 app.use('/sample',sampleRouter);
 app.use('/admin',adminRouter);
+app.use('/enroll',enrollRouter);
 
 let port = process.env.PORT || 3005;
 

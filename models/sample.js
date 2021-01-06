@@ -27,6 +27,10 @@ const sampleSchema = mongoose.Schema({
   url: {
     type: String,
   },
+  dataAdded: {
+    type: mongoose.Schema.Types.Date,
+    default: new Date(),
+  },
 });
 
 export default mongoose.model("Sample", sampleSchema);

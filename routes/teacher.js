@@ -1,5 +1,6 @@
 import express from "express";
 import Teacher from "../models/teacher.js";
+import { studentActiveEnrollments, teacherActiveEnrollments } from "./enroll.js";
 
 const teacherRouter = express.Router();
 
@@ -37,13 +38,15 @@ teacherRouter.get("/", (req, res) => {
 });
 
 teacherRouter.get("/:id", (req, res) => {
-  Teacher.find({ _id: req.params.id })
+  Teacher.findOne({ _id: req.params.id })
     .populate("samples")
-    .exec((err, data) => {
+    .exec(async (err, data) => {
       if (err) {
         res.status(400).json({ message: "teacher cannot found", error: err });
       } else {
-        res.status(200).json(data[0]);
+        let enrollData = await teacherActiveEnrollments(req,res,true) || [];  
+        data['students'] = enrollData.map(en => en.studentID);
+        res.status(200).json(data);
       }
     });
 });

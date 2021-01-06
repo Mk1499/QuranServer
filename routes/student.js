@@ -1,6 +1,7 @@
 import express from "express";
 import Student from "../models/student.js";
 import Teacher from "../models/teacher.js";
+import { studentActiveEnrollments, studentEnrollments } from "./enroll.js";
 
 const studentRouter = express.Router();
 
@@ -36,16 +37,18 @@ studentRouter.get("/", (req, res) => {
   });
 });
 
-studentRouter.get("/:id", (req, res) => {
-  Student.find({ _id: req.params.id })
-    .populate("teachers")
-    .exec((err, data) => {
-      if (err) {
-        res.status(400).json({ message: "Students Not Listed", error: err });
-      } else {
-        res.status(200).json(data[0]);
-      }
-    });
+studentRouter.get("/:id",  (req, res) => {
+  Student.findOne({ _id: req.params.id }, async (err, data) => {
+    if (err) {
+      res.status(400).json({ message: "Students Not Listed", error: err });
+    } else {
+      console.log( );
+      let enrollData = await studentActiveEnrollments(req,res,true) || []; 
+      
+       data['teachers'] = enrollData.map(en => en.teacherID)
+       res.status(200).json(data);
+    }
+  });
 });
 
 studentRouter.post("/login", (req, res) => {
@@ -70,12 +73,10 @@ studentRouter.post("/login", (req, res) => {
         }
       });
   } else {
-    res
-      .status(400)
-      .json({
-        message: "An Error Happened",
-        error: "Email and Password Both Required",
-      });
+    res.status(400).json({
+      message: "An Error Happened",
+      error: "Email and Password Both Required",
+    });
   }
 });
 

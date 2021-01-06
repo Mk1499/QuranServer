@@ -21,12 +21,6 @@ const studentSchema = mongoose.Schema({
     default:
       "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png",
   },
-  teachers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Teacher",
-    },
-  ],
   role: {
     type: String,
     default:"Student"
