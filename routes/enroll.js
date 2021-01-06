@@ -15,6 +15,7 @@ enrollRouter.post("/remove", (req, res) => {
 enrollRouter.get("/all", (req, res) => allEnrollments(req, res));
 enrollRouter.get("/all/grouped", (req, res) => allEnrollmentsGrouped(req, res));
 enrollRouter.get("/all/active", (req, res) => allActiveEnrollments(req, res));
+enrollRouter.get("/all/active/grouped", (req, res) => allActiveEnrollmentsGrouped(req, res));
 enrollRouter.get("/student/:id", (req, res) => studentEnrollments(req, res));
 enrollRouter.get("/teacher/:id", (req, res) => teacherEnrollments(req, res));
 enrollRouter.get("/student/:id/active", (req, res) =>
@@ -41,6 +42,37 @@ enrollRouter.get("/unenrolls/teacher/:id/grouped", (req, res) =>
 export const allEnrollmentsGrouped = (req, res) => {
   Enroll.aggregate(
     [
+      {
+        $group: {
+          _id: {
+            year: { $year: "$dateTime" },
+            month: { $month: "$dateTime" },
+            // day: { $dayOfMonth: "$dateTime" },
+          },
+          count: { $sum: 1 },
+          enrolls: { $push: "$_id" },
+        },
+      },
+    ],
+    (err, data) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "Error Getting Enrolments ordered", error: err });
+      } else {
+        res.status(200).json(data);
+      }
+    }
+  );
+};
+export const allActiveEnrollmentsGrouped = (req, res) => {
+  Enroll.aggregate(
+    [
+      {
+        $match: {
+          active: true,
+        },
+      },
       {
         $group: {
           _id: {
