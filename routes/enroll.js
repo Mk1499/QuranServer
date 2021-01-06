@@ -17,35 +17,26 @@ enrollRouter.get("/all/grouped", (req, res) => allEnrollmentsGrouped(req, res));
 enrollRouter.get("/all/active", (req, res) => allActiveEnrollments(req, res));
 enrollRouter.get("/student/:id", (req, res) => studentEnrollments(req, res));
 enrollRouter.get("/teacher/:id", (req, res) => teacherEnrollments(req, res));
-enrollRouter.get("/student/:id/active", (req, res) => studentActiveEnrollments(req, res));
-enrollRouter.get("/student/:id/active/grouped", (req, res) => studentActiveEnrollmentsGrouped(req, res));
-enrollRouter.get("/teacher/:id/active", (req, res) => teacherActiveEnrollments(req, res));
-enrollRouter.get("/teacher/:id/active/grouped", (req, res) =>teacherActiveEnrollmentsGrouped(req, res));
+enrollRouter.get("/student/:id/active", (req, res) =>
+  studentActiveEnrollments(req, res)
+);
+enrollRouter.get("/student/:id/active/grouped", (req, res) =>
+  studentActiveEnrollmentsGrouped(req, res)
+);
+enrollRouter.get("/teacher/:id/active", (req, res) =>
+  teacherActiveEnrollments(req, res)
+);
+enrollRouter.get("/teacher/:id/active/grouped", (req, res) =>
+  teacherActiveEnrollmentsGrouped(req, res)
+);
 enrollRouter.get("/unenrolls", (req, res) => allUnEnrollments(req, res));
-enrollRouter.get("/unenrolls/grouped", (req, res) => allUnEnrollmentsGrouped(req, res));
-enrollRouter.get("/unenrolls/teacher/:id/grouped", (req, res) => teacherUnEnrollmentsGrouped(req, res));
+enrollRouter.get("/unenrolls/grouped", (req, res) =>
+  allUnEnrollmentsGrouped(req, res)
+);
+enrollRouter.get("/unenrolls/teacher/:id/grouped", (req, res) =>
+  teacherUnEnrollmentsGrouped(req, res)
+);
 
-export const allEnrollments = (req, res, external = false) => {
-  Enroll.find({}, (err, data) => {
-    if (err) {
-      if (!external)
-        res
-          .status(400)
-          .json({ message: "Error Getting Enrolments", error: err });
-      else {
-        return null;
-      }
-    } else {
-      if (!external)
-        res.status(200).json({
-          data,
-        });
-      else {
-        return data;
-      }
-    }
-  });
-};
 //Grouped
 export const allEnrollmentsGrouped = (req, res) => {
   Enroll.aggregate(
@@ -68,9 +59,7 @@ export const allEnrollmentsGrouped = (req, res) => {
           .status(400)
           .json({ message: "Error Getting Enrolments ordered", error: err });
       } else {
-        res.status(200).json({
-          data,
-        });
+        res.status(200).json(data);
       }
     }
   );
@@ -96,9 +85,7 @@ export const allUnEnrollmentsGrouped = (req, res) => {
           .status(400)
           .json({ message: "Error Getting Enrolments ordered", error: err });
       } else {
-        res.status(200).json({
-          data,
-        });
+        res.status(200).json(data);
       }
     }
   );
@@ -130,9 +117,7 @@ export const teacherActiveEnrollmentsGrouped = (req, res) => {
           error: err,
         });
       } else {
-        res.status(200).json({
-          data,
-        });
+        res.status(200).json(data);
       }
     }
   );
@@ -164,20 +149,19 @@ export const studentActiveEnrollmentsGrouped = (req, res) => {
           error: err,
         });
       } else {
-        res.status(200).json({
-          data,
-        });
+        res.status(200).json(data);
       }
     }
   );
 };
-export const teacherUnEnrollmentsGrouped = (req,res) => {
+export const teacherUnEnrollmentsGrouped = (req, res) => {
   UnEnroll.aggregate(
-    [ {
-      $match:{
-        teacherID : new mongoose.Types.ObjectId(req.params.id)
-      }
-    },
+    [
+      {
+        $match: {
+          teacherID: new mongoose.Types.ObjectId(req.params.id),
+        },
+      },
       {
         $group: {
           _id: {
@@ -196,14 +180,33 @@ export const teacherUnEnrollmentsGrouped = (req,res) => {
           .status(400)
           .json({ message: "Error Getting Enrolments ordered", error: err });
       } else {
-        res.status(200).json({
-          data,
-        });
+        res.status(200).json(data);
       }
     }
   );
-}
+};
 // Complete
+export const allEnrollments = (req, res, external = false) => {
+  Enroll.find({}, (err, data) => {
+    if (err) {
+      if (!external)
+        res
+          .status(400)
+          .json({ message: "Error Getting Enrolments", error: err });
+      else {
+        return null;
+      }
+    } else {
+      if (!external)
+        res.status(200).json({
+          data,
+        });
+      else {
+        return data;
+      }
+    }
+  });
+};
 export const allActiveEnrollments = (req, res, external = false) => {
   Enroll.find(
     {
