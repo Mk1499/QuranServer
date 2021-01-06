@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 
 import Enroll from "../models/enroll.js";
 import UnEnroll from "../models/unEnroll.js";
@@ -8,21 +9,21 @@ const enrollRouter = express.Router();
 enrollRouter.post("/", (req, res) => {
   addEnroll(req, res);
 });
-
 enrollRouter.post("/remove", (req, res) => {
   removeEnroll(req, res);
 });
 enrollRouter.get("/all", (req, res) => allEnrollments(req, res));
+enrollRouter.get("/all/grouped", (req, res) => allEnrollmentsGrouped(req, res));
 enrollRouter.get("/all/active", (req, res) => allActiveEnrollments(req, res));
 enrollRouter.get("/student/:id", (req, res) => studentEnrollments(req, res));
 enrollRouter.get("/teacher/:id", (req, res) => teacherEnrollments(req, res));
-enrollRouter.get("/student/:id/active", (req, res) =>
-  studentActiveEnrollments(req, res)
-);
-enrollRouter.get("/teacher/:id/active", (req, res) =>
-  teacherActiveEnrollments(req, res)
-);
+enrollRouter.get("/student/:id/active", (req, res) => studentActiveEnrollments(req, res));
+enrollRouter.get("/student/:id/active/grouped", (req, res) => studentActiveEnrollmentsGrouped(req, res));
+enrollRouter.get("/teacher/:id/active", (req, res) => teacherActiveEnrollments(req, res));
+enrollRouter.get("/teacher/:id/active/grouped", (req, res) =>teacherActiveEnrollmentsGrouped(req, res));
 enrollRouter.get("/unenrolls", (req, res) => allUnEnrollments(req, res));
+enrollRouter.get("/unenrolls/grouped", (req, res) => allUnEnrollmentsGrouped(req, res));
+enrollRouter.get("/unenrolls/teacher/:id/grouped", (req, res) => teacherUnEnrollmentsGrouped(req, res));
 
 export const allEnrollments = (req, res, external = false) => {
   Enroll.find({}, (err, data) => {
@@ -45,6 +46,164 @@ export const allEnrollments = (req, res, external = false) => {
     }
   });
 };
+//Grouped
+export const allEnrollmentsGrouped = (req, res) => {
+  Enroll.aggregate(
+    [
+      {
+        $group: {
+          _id: {
+            year: { $year: "$dateTime" },
+            month: { $month: "$dateTime" },
+            day: { $dayOfMonth: "$dateTime" },
+          },
+          count: { $sum: 1 },
+          enrolls: { $push: "$_id" },
+        },
+      },
+    ],
+    (err, data) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "Error Getting Enrolments ordered", error: err });
+      } else {
+        res.status(200).json({
+          data,
+        });
+      }
+    }
+  );
+};
+export const allUnEnrollmentsGrouped = (req, res) => {
+  UnEnroll.aggregate(
+    [
+      {
+        $group: {
+          _id: {
+            year: { $year: "$dateTime" },
+            month: { $month: "$dateTime" },
+            day: { $dayOfMonth: "$dateTime" },
+          },
+          count: { $sum: 1 },
+          enrolls: { $push: "$_id" },
+        },
+      },
+    ],
+    (err, data) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "Error Getting Enrolments ordered", error: err });
+      } else {
+        res.status(200).json({
+          data,
+        });
+      }
+    }
+  );
+};
+export const teacherActiveEnrollmentsGrouped = (req, res) => {
+  Enroll.aggregate(
+    [
+      {
+        $match: {
+          teacherID: new mongoose.Types.ObjectId(req.params.id),
+          active: true,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$dateTime" },
+            month: { $month: "$dateTime" },
+            day: { $dayOfMonth: "$dateTime" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ],
+    (err, data) => {
+      if (err) {
+        res.status(400).json({
+          message: "Error Getting Teacher Enrolments ordered",
+          error: err,
+        });
+      } else {
+        res.status(200).json({
+          data,
+        });
+      }
+    }
+  );
+};
+export const studentActiveEnrollmentsGrouped = (req, res) => {
+  Enroll.aggregate(
+    [
+      {
+        $match: {
+          studentID: new mongoose.Types.ObjectId(req.params.id),
+          active: true,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$dateTime" },
+            month: { $month: "$dateTime" },
+            day: { $dayOfMonth: "$dateTime" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ],
+    (err, data) => {
+      if (err) {
+        res.status(400).json({
+          message: "Error Getting Student Enrolments ordered",
+          error: err,
+        });
+      } else {
+        res.status(200).json({
+          data,
+        });
+      }
+    }
+  );
+};
+export const teacherUnEnrollmentsGrouped = (req,res) => {
+  UnEnroll.aggregate(
+    [ {
+      $match:{
+        teacherID : new mongoose.Types.ObjectId(req.params.id)
+      }
+    },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$dateTime" },
+            month: { $month: "$dateTime" },
+            day: { $dayOfMonth: "$dateTime" },
+          },
+          count: { $sum: 1 },
+          enrolls: { $push: "$_id" },
+        },
+      },
+    ],
+    (err, data) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "Error Getting Enrolments ordered", error: err });
+      } else {
+        res.status(200).json({
+          data,
+        });
+      }
+    }
+  );
+}
+// Complete
 export const allActiveEnrollments = (req, res, external = false) => {
   Enroll.find(
     {
@@ -72,7 +231,6 @@ export const allActiveEnrollments = (req, res, external = false) => {
   );
 };
 export const studentEnrollments = async (req, res, external = false) => {
-  console.log("Called", req.params);
   // let teachers = [];
 
   return await new Promise((resolve, reject) => {
@@ -101,7 +259,6 @@ export const studentEnrollments = async (req, res, external = false) => {
   });
 };
 export const studentActiveEnrollments = async (req, res, external = false) => {
-  console.log("Called", req.params);
   // let teachers = [];
 
   return await new Promise((resolve, reject) => {
@@ -130,7 +287,6 @@ export const studentActiveEnrollments = async (req, res, external = false) => {
   });
 };
 export const teacherEnrollments = async (req, res, external = false) => {
-  console.log("Called", req.params);
   // let teachers = [];
 
   return await new Promise((resolve, reject) => {
@@ -159,7 +315,6 @@ export const teacherEnrollments = async (req, res, external = false) => {
   });
 };
 export const teacherActiveEnrollments = async (req, res, external = false) => {
-  console.log("Called", req.params);
   // let teachers = [];
 
   return await new Promise((resolve, reject) => {

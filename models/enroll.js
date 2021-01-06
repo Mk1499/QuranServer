@@ -5,12 +5,16 @@ const enrollSchema = mongoose.Schema({
   studentID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
-    required:true
+    required: true,
   },
   teacherID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Teacher",
-    required:true
+    required: true,
+  },
+  month: {
+    type: mongoose.Schema.Types.Number,
+    default: new Date().getMonth(),
   },
   dateTime: {
     type: mongoose.Schema.Types.Date,
