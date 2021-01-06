@@ -13,7 +13,7 @@ enrollRouter.post("/remove", (req, res) => {
   removeEnroll(req, res);
 });
 enrollRouter.get("/all", (req, res) => allEnrollments(req, res));
-enrollRouter.get("/all/active", (req, res) => allEnrollments(req, res));
+enrollRouter.get("/all/active", (req, res) => allActiveEnrollments(req, res));
 enrollRouter.get("/student/:id", (req, res) => studentEnrollments(req, res));
 enrollRouter.get("/teacher/:id", (req, res) => teacherEnrollments(req, res));
 enrollRouter.get("/student/:id/active", (req, res) =>
