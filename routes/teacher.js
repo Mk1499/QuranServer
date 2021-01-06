@@ -1,6 +1,9 @@
 import express from "express";
 import Teacher from "../models/teacher.js";
-import { studentActiveEnrollments, teacherActiveEnrollments } from "./enroll.js";
+import {
+  studentActiveEnrollments,
+  teacherActiveEnrollments,
+} from "./enroll.js";
 
 const teacherRouter = express.Router();
 
@@ -27,6 +30,31 @@ teacherRouter.post("/add", (req, res) => {
   );
 });
 
+teacherRouter.post("/addMany", (req, res) => {
+  console.log("Adding New teachers : ", req.body);
+  let tchers = req.body.teachers.map((t) => {
+    return {
+      name: t.name,
+      arName: t.arName,
+      email: t.email,
+      password: t.password,
+      avatar: t.avatar,
+      price: t.price,
+      role: "teacher",
+    };
+  });
+
+  console.log("teacher s : ",tchers);
+
+  Teacher.insertMany(tchers, (err, teacher) => {
+    if (err) {
+      res.status(400).json({ message: "teachers Not Created", error: err });
+    } else {
+      res.status(200).json({ message: "teachers Created", teacher });
+    }
+  });
+});
+
 teacherRouter.get("/", (req, res) => {
   Teacher.find({}, (err, data) => {
     if (err) {
@@ -44,8 +72,8 @@ teacherRouter.get("/:id", (req, res) => {
       if (err) {
         res.status(400).json({ message: "teacher cannot found", error: err });
       } else {
-        let enrollData = await teacherActiveEnrollments(req,res,true) || [];  
-        data['students'] = enrollData.map(en => en.studentID);
+        let enrollData = (await teacherActiveEnrollments(req, res, true)) || [];
+        data["students"] = enrollData.map((en) => en.studentID);
         res.status(200).json(data);
       }
     });
