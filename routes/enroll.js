@@ -13,6 +13,7 @@ enrollRouter.post("/remove", (req, res) => {
   removeEnroll(req, res);
 });
 enrollRouter.get("/all", (req, res) => allEnrollments(req, res));
+enrollRouter.get("/all/active", (req, res) => allEnrollments(req, res));
 enrollRouter.get("/student/:id", (req, res) => studentEnrollments(req, res));
 enrollRouter.get("/teacher/:id", (req, res) => teacherEnrollments(req, res));
 enrollRouter.get("/student/:id/active", (req, res) =>
@@ -43,6 +44,32 @@ export const allEnrollments = (req, res, external = false) => {
       }
     }
   });
+};
+export const allActiveEnrollments = (req, res, external = false) => {
+  Enroll.find(
+    {
+      active: true,
+    },
+    (err, data) => {
+      if (err) {
+        if (!external)
+          res
+            .status(400)
+            .json({ message: "Error Getting Enrolments", error: err });
+        else {
+          return null;
+        }
+      } else {
+        if (!external)
+          res.status(200).json({
+            data,
+          });
+        else {
+          return data;
+        }
+      }
+    }
+  );
 };
 export const studentEnrollments = async (req, res, external = false) => {
   console.log("Called", req.params);
