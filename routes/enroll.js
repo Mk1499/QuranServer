@@ -55,7 +55,7 @@ export const allEnrollmentsGrouped = (req, res) => {
           _id: {
             year: { $year: "$dateTime" },
             month: { $month: "$dateTime" },
-            day: { $dayOfMonth: "$dateTime" },
+            // day: { $dayOfMonth: "$dateTime" },
           },
           count: { $sum: 1 },
           enrolls: { $push: "$_id" },
@@ -83,7 +83,7 @@ export const allUnEnrollmentsGrouped = (req, res) => {
           _id: {
             year: { $year: "$dateTime" },
             month: { $month: "$dateTime" },
-            day: { $dayOfMonth: "$dateTime" },
+            // day: { $dayOfMonth: "$dateTime" },
           },
           count: { $sum: 1 },
           enrolls: { $push: "$_id" },
@@ -117,7 +117,7 @@ export const teacherActiveEnrollmentsGrouped = (req, res) => {
           _id: {
             year: { $year: "$dateTime" },
             month: { $month: "$dateTime" },
-            day: { $dayOfMonth: "$dateTime" },
+            // day: { $dayOfMonth: "$dateTime" },
           },
           count: { $sum: 1 },
         },
@@ -183,7 +183,7 @@ export const teacherUnEnrollmentsGrouped = (req,res) => {
           _id: {
             year: { $year: "$dateTime" },
             month: { $month: "$dateTime" },
-            day: { $dayOfMonth: "$dateTime" },
+            // day: { $dayOfMonth: "$dateTime" },
           },
           count: { $sum: 1 },
           enrolls: { $push: "$_id" },
