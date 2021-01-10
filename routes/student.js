@@ -1,6 +1,8 @@
 import express from "express";
 import Student from "../models/student.js";
 import Teacher from "../models/teacher.js";
+import Enroll from "../models/enroll.js";
+
 import { studentActiveEnrollments, studentEnrollments } from "./enroll.js";
 
 const studentRouter = express.Router();
@@ -37,18 +39,37 @@ studentRouter.get("/", (req, res) => {
   });
 });
 
-studentRouter.get("/:id",  (req, res) => {
+studentRouter.get("/:id", (req, res) => {
   Student.findOne({ _id: req.params.id }, async (err, data) => {
     if (err) {
       res.status(400).json({ message: "Students Not Listed", error: err });
     } else {
-      console.log( );
-      let enrollData = await studentActiveEnrollments(req,res,true) || []; 
-      
-       data['teachers'] = enrollData.map(en => en.teacherID)
-       res.status(200).json(data);
+      console.log();
+      let enrollData = (await studentActiveEnrollments(req, res, true)) || [];
+
+      data["teachers"] = enrollData.map((en) => en.teacherID);
+      res.status(200).json(data);
     }
   });
+});
+
+studentRouter.get("/:id/teachers", (req, res) => {
+  Enroll.find(
+    {
+      studentID: req.params.id,
+      active: true,
+    },
+    { teacherID: 1, _id: 0 }
+  )
+    .populate("teacherID")
+    .exec((err, data) => {
+      if (err) {
+        res.status(400).json({ message: "Students Not Listed", error: err });
+      } else {
+        data = data.map((item) => item["teacherID"]);
+        res.status(200).json(data);
+      }
+    });
 });
 
 studentRouter.post("/login", (req, res) => {
