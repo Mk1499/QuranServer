@@ -30,6 +30,35 @@ teacherRouter.post("/add", (req, res) => {
   );
 });
 
+teacherRouter.post("/login", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+
+  console.log("Teacher Login : ",email,password);
+
+  if (email && password) {
+    let enhEmail = email.toLowerCase();
+
+    Teacher.findOne({
+      email: enhEmail,
+      password,
+    }).exec((err, data) => {
+      if (err) {
+        res.status(400).json({ message: "An Error Happened", error: err });
+      } else if (data) {
+        res.status(200).json(data);
+      } else {
+        res.status(404).json({ message: "Wrong email or password" });
+      }
+    });
+  } else {
+    res.status(400).json({
+      message: "An Error Happened",
+      error: "Email and Password Both Required",
+    });
+  }
+});
+
 teacherRouter.post("/addMany", (req, res) => {
   console.log("Adding New teachers : ", req.body);
   let tchers = req.body.teachers.map((t) => {
@@ -44,7 +73,7 @@ teacherRouter.post("/addMany", (req, res) => {
     };
   });
 
-  console.log("teacher s : ",tchers);
+  console.log("teacher s : ", tchers);
 
   Teacher.insertMany(tchers, (err, teacher) => {
     if (err) {
