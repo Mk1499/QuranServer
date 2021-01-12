@@ -34,7 +34,7 @@ teacherRouter.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
 
-  console.log("Teacher Login : ",email,password);
+  console.log("Teacher Login : ", email, password);
 
   if (email && password) {
     let enhEmail = email.toLowerCase();
@@ -96,14 +96,37 @@ teacherRouter.get("/", (req, res) => {
 
 teacherRouter.get("/:id", (req, res) => {
   Teacher.findOne({ _id: req.params.id })
-    .populate("samples")
+    // .populate("samples")
     .exec(async (err, data) => {
       if (err) {
         res.status(400).json({ message: "teacher cannot found", error: err });
       } else {
         let enrollData = (await teacherActiveEnrollments(req, res, true)) || [];
-        data["students"] = enrollData.map((en) => en.studentID);
+        console.log("ENDATA : ",enrollData);
+        data['students']= enrollData.map(en => en.studentID._id)
         res.status(200).json(data);
+      }
+    });
+});
+
+teacherRouter.get("/:id/students", async (req, res) => {
+  let enrollData = (await teacherActiveEnrollments(req, res, true)) || [];
+  let students = enrollData.map((i) => i.studentID);
+  res.status(200).json(students);
+});
+
+teacherRouter.get("/:id/samples", (req, res) => {
+  Teacher.findOne({ _id: req.params.id }, { _id: 0, samples: 1 })
+    .populate("samples")
+    .exec((err, data) => {
+      if (err) {
+        res.status(400).json({ message: "teacher cannot found", error: err });
+      } else {
+        console.log("SA : ",data);
+        if (data){
+          data = data['samples']
+        }
+        res.status(200).json(data || []);
       }
     });
 });

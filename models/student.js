@@ -25,6 +25,9 @@ const studentSchema = mongoose.Schema({
     type: String,
     default:"Student"
   },
+  teachers:[{
+    type:mongoose.Schema.Types.ObjectId , ref:'Teacher'
+}], 
 });
 
 export default mongoose.model("Student", studentSchema);

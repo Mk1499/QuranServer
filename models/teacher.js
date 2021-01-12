@@ -25,6 +25,9 @@ const teacherSchema = mongoose.Schema({
     samples:[{
         type:mongoose.Schema.Types.ObjectId , ref:'Sample'
     }], 
+    students:[{
+        type:mongoose.Schema.Types.ObjectId , ref:'Student'
+    }], 
     reviews:[{
         type:mongoose.Schema.Types.ObjectId , ref:'Review'
     }],

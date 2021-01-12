@@ -15,7 +15,9 @@ enrollRouter.post("/remove", (req, res) => {
 enrollRouter.get("/all", (req, res) => allEnrollments(req, res));
 enrollRouter.get("/all/grouped", (req, res) => allEnrollmentsGrouped(req, res));
 enrollRouter.get("/all/active", (req, res) => allActiveEnrollments(req, res));
-enrollRouter.get("/all/active/grouped", (req, res) => allActiveEnrollmentsGrouped(req, res));
+enrollRouter.get("/all/active/grouped", (req, res) =>
+  allActiveEnrollmentsGrouped(req, res)
+);
 enrollRouter.get("/student/:id", (req, res) => studentEnrollments(req, res));
 enrollRouter.get("/teacher/:id", (req, res) => teacherEnrollments(req, res));
 enrollRouter.get("/student/:id/active", (req, res) =>
@@ -361,12 +363,16 @@ export const teacherActiveEnrollments = async (req, res, external = false) => {
         resolve(data);
       }
     })
+      .populate("studentID")
+      .exec()
       .then((data) => {
         if (!external) {
           console.log("Hook");
           res.status(200).json({
             data,
           });
+        } else {
+          return data;
         }
       })
       .catch((err) => {
