@@ -327,14 +327,16 @@ export const teacherEnrollments = async (req, res, external = false) => {
   // let teachers = [];
 
   return await new Promise((resolve, reject) => {
-    Enroll.find({ teacherID: req.params.id }, (err, data) => {
-      if (err) {
-        reject(err);
-        console.log("ERR : Here : ", err);
-      } else {
-        resolve(data);
-      }
-    })
+    Enroll.find({ teacherID: req.params.id })
+      .populate("studentID")
+      .exec((err, data) => {
+        if (err) {
+          reject(err);
+          console.log("ERR : Here : ", err);
+        } else {
+          resolve(data);
+        }
+      })
       .then((data) => {
         if (!external) {
           console.log("Hook");
