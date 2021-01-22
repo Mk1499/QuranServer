@@ -118,4 +118,24 @@ function connectMobileTokenToAdmin(userId, token, res) {
   );
 }
 
+export function sendNotification(body, token) {
+  let authKey =
+    "AAAAy2xgfNM:APA91bF5y18uU2sCqRn3H5-7CWmiuYsR3ydTqFyxn43iHUHI_59LWHSJAvXHf-f-QGM72DPjLrGBZAjg3b14MwfTCJsRAhzRiUllGumNrES925brXLwYm03DzE7WHrlgPTJduaST7Pm4";
+  fetch("https://fcm.googleapis.com/fcm/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `key=${authKey}`,
+    },
+    body: {
+      notificatoion: {
+        title: body.title,
+        body: body.body,
+        link: body.link,
+      },
+      to: token,
+    },
+  });
+}
+
 export default notifyRouter;

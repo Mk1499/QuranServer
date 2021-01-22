@@ -11,6 +11,7 @@ import sampleRouter from "./routes/sample.js";
 import adminRouter from "./routes/admin.js";
 import enrollRouter from "./routes/enroll.js";
 import notifyRouter from "./routes/notify.js";
+import lectureRouter from "./routes/leture.js";
 
 const app = express();
 const server = http.Server(app);
@@ -37,6 +38,7 @@ app.use("/sample", sampleRouter);
 app.use("/admin", adminRouter);
 app.use("/enroll", enrollRouter);
 app.use("/notify", notifyRouter);
+app.use("/lecture", lectureRouter);
 
 let port = process.env.PORT || 3005;
 
