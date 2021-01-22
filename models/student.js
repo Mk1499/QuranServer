@@ -5,7 +5,7 @@ const studentSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
-    lowercase:true
+    lowercase: true,
   },
   name: {
     type: String,
@@ -23,11 +23,22 @@ const studentSchema = mongoose.Schema({
   },
   role: {
     type: String,
-    default:"Student"
+    default: "Student",
   },
-  teachers:[{
-    type:mongoose.Schema.Types.ObjectId , ref:'Teacher'
-}], 
+  teachers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Teacher",
+    },
+  ],
+  webDeviceToken: {
+    type: String,
+    default: null,
+  },
+  mobileDeviceToken: {
+    type: String,
+    default: null,
+  },
 });
 
 export default mongoose.model("Student", studentSchema);

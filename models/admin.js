@@ -5,7 +5,7 @@ const adminSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
-    lowercase:true
+    lowercase: true,
   },
   name: {
     type: String,
@@ -23,7 +23,15 @@ const adminSchema = mongoose.Schema({
   },
   role: {
     type: String,
-    default:"Admin"
+    default: "Admin",
+  },
+  webDeviceToken: {
+    type: String,
+    default: null,
+  },
+  mobileDeviceToken: {
+    type: String,
+    default: null,
   },
 });
 

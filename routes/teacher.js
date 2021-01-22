@@ -9,6 +9,7 @@ const teacherRouter = express.Router();
 
 teacherRouter.post("/add", (req, res) => {
   console.log("Adding New teacher : ", req.body);
+  let { webToken, mobileToken } = req.body;
 
   Teacher.create(
     {
@@ -24,6 +25,46 @@ teacherRouter.post("/add", (req, res) => {
       if (err) {
         res.status(400).json({ message: "teacher Not Created", error: err });
       } else {
+        if (webToken) {
+          Teacher.updateOne(
+            {
+              _id: teacher._id,
+            },
+            {
+              $set: {
+                webDeviceToken: webToken,
+              },
+            },
+            (err) => {
+              if (err) {
+                res.status(404).json({ message: "Wrong Adding Device Token" });
+              } else {
+                data["webDeviceToken"] = webToken;
+                res.status(200).json({ student: data });
+              }
+            }
+          );
+        }
+        if (mobileToken) {
+          Teacher.updateOne(
+            {
+              _id: teacher._id,
+            },
+            {
+              $set: {
+                mobileDeviceToken: mobileToken,
+              },
+            },
+            (err) => {
+              if (err) {
+                res.status(404).json({ message: "Wrong Adding Device Token" });
+              } else {
+                data["mobileDeviceToken"] = mobileToken;
+                res.status(200).json({ student: data });
+              }
+            }
+          );
+        }
         res.status(200).json({ message: "teacher Created", teacher });
       }
     }
@@ -33,6 +74,7 @@ teacherRouter.post("/add", (req, res) => {
 teacherRouter.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
+  let { webToken, mobileToken } = req.body;
 
   console.log("Teacher Login : ", email, password);
 
@@ -46,7 +88,46 @@ teacherRouter.post("/login", (req, res) => {
       if (err) {
         res.status(400).json({ message: "An Error Happened", error: err });
       } else if (data) {
-        res.status(200).json(data);
+        if (webToken) {
+          Teacher.updateOne(
+            {
+              _id: data._id,
+            },
+            {
+              $set: {
+                webDeviceToken: webToken,
+              },
+            },
+            (err) => {
+              if (err) {
+                res.status(404).json({ message: "Wrong Adding Device Token" });
+              } else {
+                data["webDeviceToken"] = webToken;
+                res.status(200).json({ student: data });
+              }
+            }
+          );
+        }
+        if (mobileToken) {
+          Teacher.updateOne(
+            {
+              _id: data._id,
+            },
+            {
+              $set: {
+                mobileDeviceToken: mobileToken,
+              },
+            },
+            (err) => {
+              if (err) {
+                res.status(404).json({ message: "Wrong Adding Device Token" });
+              } else {
+                data["mobileDeviceToken"] = mobileToken;
+                res.status(200).json({ student: data });
+              }
+            }
+          );
+        }
       } else {
         res.status(404).json({ message: "Wrong email or password" });
       }
@@ -102,8 +183,8 @@ teacherRouter.get("/:id", (req, res) => {
         res.status(400).json({ message: "teacher cannot found", error: err });
       } else {
         let enrollData = (await teacherActiveEnrollments(req, res, true)) || [];
-        console.log("ENDATA : ",enrollData);
-        data['students']= enrollData.map(en => en.studentID._id)
+        console.log("ENDATA : ", enrollData);
+        data["students"] = enrollData.map((en) => en.studentID._id);
         res.status(200).json(data);
       }
     });
@@ -122,9 +203,9 @@ teacherRouter.get("/:id/samples", (req, res) => {
       if (err) {
         res.status(400).json({ message: "teacher cannot found", error: err });
       } else {
-        console.log("SA : ",data);
-        if (data){
-          data = data['samples']
+        console.log("SA : ", data);
+        if (data) {
+          data = data["samples"];
         }
         res.status(200).json(data || []);
       }

@@ -4,16 +4,13 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import http from "http";
 
-import studentRouter from './routes/student.js'
-import teacherRouter from './routes/teacher.js'
-import reviewRouter from './routes/review.js'
-import sampleRouter from './routes/sample.js'
-import adminRouter from './routes/admin.js'; 
-import enrollRouter from './routes/enroll.js'; 
-
-
-
-
+import studentRouter from "./routes/student.js";
+import teacherRouter from "./routes/teacher.js";
+import reviewRouter from "./routes/review.js";
+import sampleRouter from "./routes/sample.js";
+import adminRouter from "./routes/admin.js";
+import enrollRouter from "./routes/enroll.js";
+import notifyRouter from "./routes/notify.js";
 
 const app = express();
 const server = http.Server(app);
@@ -30,15 +27,16 @@ mongoose.connection.once("open", () => {
 app.get("/", (req, res) => {
   res.send("Welcome in Quran Dev Server");
 });
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/student',studentRouter);
-app.use('/teacher',teacherRouter);
-app.use('/review',reviewRouter);
-app.use('/sample',sampleRouter);
-app.use('/admin',adminRouter);
-app.use('/enroll',enrollRouter);
+app.use("/student", studentRouter);
+app.use("/teacher", teacherRouter);
+app.use("/review", reviewRouter);
+app.use("/sample", sampleRouter);
+app.use("/admin", adminRouter);
+app.use("/enroll", enrollRouter);
+app.use("/notify", notifyRouter);
 
 let port = process.env.PORT || 3005;
 

@@ -9,7 +9,7 @@ const studentRouter = express.Router();
 
 studentRouter.post("/add", (req, res) => {
   console.log("Adding New Student : ", req.body);
-
+  let { webToken, mobileToken } = req.body;
   Student.create(
     {
       name: req.body.name,
@@ -23,6 +23,18 @@ studentRouter.post("/add", (req, res) => {
       if (err) {
         res.status(400).json({ message: "Student Not Created", error: err });
       } else {
+        if (webToken) {
+          Student.updateOne(
+            { _id: student._id },
+            { $set: { webDeviceToken: webToken } }
+          );
+        }
+        if (mobileToken) {
+          Student.updateOne(
+            { _id: student._id },
+            { $set: { mobileDeviceToken: mobileToken } }
+          );
+        }
         res.status(200).json({ message: "Student Created", student });
       }
     }
@@ -73,8 +85,7 @@ studentRouter.get("/:id/teachers", (req, res) => {
 });
 
 studentRouter.post("/login", (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
+  let { email, password, mobileToken, webToken } = req.body;
 
   if (email && password) {
     let enhEmail = email.toLowerCase();
@@ -88,7 +99,47 @@ studentRouter.post("/login", (req, res) => {
         if (err) {
           res.status(400).json({ message: "An Error Happened", error: err });
         } else if (data) {
-          res.status(200).json({ student: data });
+          if (webToken) {
+            console.log(data);
+            Student.updateOne(
+              { _id: data._id },
+              {
+                $set: {
+                  webDeviceToken: webToken,
+                },
+              },
+              (err) => {
+                if (err) {
+                  res
+                    .status(404)
+                    .json({ message: "Wrong Adding Device Token" });
+                } else {
+                  data["webDeviceToken"] = webToken;
+                  res.status(200).json({ student: data });
+                }
+              }
+            );
+          }
+          if (mobileToken) {
+            Student.updateOne(
+              { _id: data._id },
+              {
+                $set: {
+                  mobileDeviceToken: mobileToken,
+                },
+              },
+              (err) => {
+                if (err) {
+                  res
+                    .status(404)
+                    .json({ message: "Wrong Adding Device Token" });
+                } else {
+                  data["mobileDeviceToken"] = mobileToken;
+                  res.status(200).json({ student: data });
+                }
+              }
+            );
+          }
         } else {
           res.status(404).json({ message: "Wrong email or password" });
         }
