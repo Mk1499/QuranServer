@@ -67,7 +67,7 @@ teacherRouter.post("/login", (req, res) => {
                 res.status(404).json({ message: "Wrong Adding Device Token" });
               } else {
                 data["webDeviceToken"] = webToken;
-                res.status(200).json({ teacher: data });
+                res.status(200).json(data);
               }
             }
           );
@@ -87,7 +87,7 @@ teacherRouter.post("/login", (req, res) => {
                 res.status(404).json({ message: "Wrong Adding Device Token" });
               } else {
                 data["mobileDeviceToken"] = mobileToken;
-                res.status(200).json({ student: data });
+                res.status(200).json(data);
               }
             }
           );
