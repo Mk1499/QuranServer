@@ -10,31 +10,25 @@ const studentRouter = express.Router();
 studentRouter.post("/add", (req, res) => {
   console.log("Adding New Student : ", req.body);
   let { webToken, mobileToken } = req.body;
-  Student.create(
-    {
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      avatar: req.body.avatar,
-      role: "student",
-    },
+  let newStudent = {
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    avatar: req.body.avatar,
+    role: "student",
+  };
+  if (webToken) {
+    newStudent["webDeviceToken"] = webToken;
+  } else if (mobileToken) {
+    newStudent["mobileDeviceToken"] = mobileToken;
+  }
 
+  Student.create(
+    newStudent,
     (err, student) => {
       if (err) {
         res.status(400).json({ message: "Student Not Created", error: err });
       } else {
-        if (webToken) {
-          Student.updateOne(
-            { _id: student._id },
-            { $set: { webDeviceToken: webToken } }
-          );
-        }
-        if (mobileToken) {
-          Student.updateOne(
-            { _id: student._id },
-            { $set: { mobileDeviceToken: mobileToken } }
-          );
-        }
         res.status(200).json({ message: "Student Created", student });
       }
     }

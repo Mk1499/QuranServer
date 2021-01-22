@@ -10,65 +10,29 @@ const teacherRouter = express.Router();
 teacherRouter.post("/add", (req, res) => {
   console.log("Adding New teacher : ", req.body);
   let { webToken, mobileToken } = req.body;
+  let newTeacher = {
+    name: req.body.name,
+    arName: req.body.arName,
+    email: req.body.email,
+    password: req.body.password,
+    avatar: req.body.avatar,
+    price: req.body.price,
+    role: "teacher",
+  };
 
-  Teacher.create(
-    {
-      name: req.body.name,
-      arName: req.body.arName,
-      email: req.body.email,
-      password: req.body.password,
-      avatar: req.body.avatar,
-      price: req.body.price,
-      role: "teacher",
-    },
-    (err, teacher) => {
-      if (err) {
-        res.status(400).json({ message: "teacher Not Created", error: err });
-      } else {
-        if (webToken) {
-          Teacher.updateOne(
-            {
-              _id: teacher._id,
-            },
-            {
-              $set: {
-                webDeviceToken: webToken,
-              },
-            },
-            (err) => {
-              if (err) {
-                res.status(404).json({ message: "Wrong Adding Device Token" });
-              } else {
-                data["webDeviceToken"] = webToken;
-                res.status(200).json({ student: data });
-              }
-            }
-          );
-        }
-        if (mobileToken) {
-          Teacher.updateOne(
-            {
-              _id: teacher._id,
-            },
-            {
-              $set: {
-                mobileDeviceToken: mobileToken,
-              },
-            },
-            (err) => {
-              if (err) {
-                res.status(404).json({ message: "Wrong Adding Device Token" });
-              } else {
-                data["mobileDeviceToken"] = mobileToken;
-                res.status(200).json({ student: data });
-              }
-            }
-          );
-        }
-        res.status(200).json({ message: "teacher Created", teacher });
-      }
+  if (webToken) {
+    newTeacher["webDeviceToken"] = webToken;
+  } else if (mobileToken) {
+    newTeacher["mobileDeviceToken"] = mobileToken;
+  }
+
+  Teacher.create(newTeacher, (err, teacher) => {
+    if (err) {
+      res.status(400).json({ message: "teacher Not Created", error: err });
+    } else {
+      res.status(200).json({ message: "teacher Created", teacher });
     }
-  );
+  });
 });
 
 teacherRouter.post("/login", (req, res) => {
