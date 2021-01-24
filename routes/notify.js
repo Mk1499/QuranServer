@@ -4,6 +4,8 @@ import User from "../models/student.js";
 import Teacher from "../models/teacher.js";
 import Admin from "../models/admin.js";
 
+import axios from "axios";
+
 const notifyRouter = express.Router();
 
 notifyRouter.post("/addwebtoken", (req, res) => {
@@ -34,6 +36,23 @@ notifyRouter.post("/addmobiletoken", (req, res) => {
       connectMobileTokenToAdmin(userId, token, res);
       break;
   }
+});
+
+notifyRouter.post("/user", (req, res) => {
+  let { recieverId, recieverType } = req.body;
+  console.log(req.body);
+  Notification.find({
+    reciever: recieverId,
+    recieverType,
+  }).exec((err, data) => {
+    if (err) {
+      res
+        .status(400)
+        .json({ message: "Cannot list user Notifications", error: err });
+    } else {
+      res.status(200).json(data);
+    }
+  });
 });
 
 function connectWebTokenToStudent(userId, token, res) {
@@ -121,21 +140,41 @@ function connectMobileTokenToAdmin(userId, token, res) {
 export function sendNotification(body, token) {
   let authKey =
     "AAAAy2xgfNM:APA91bF5y18uU2sCqRn3H5-7CWmiuYsR3ydTqFyxn43iHUHI_59LWHSJAvXHf-f-QGM72DPjLrGBZAjg3b14MwfTCJsRAhzRiUllGumNrES925brXLwYm03DzE7WHrlgPTJduaST7Pm4";
-  fetch("https://fcm.googleapis.com/fcm/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `key=${authKey}`,
+
+  let reqBody = {
+    notification: {
+      title: body.title,
+      body: body.body,
+      click_action: body.click_action,
     },
-    body: {
-      notificatoion: {
-        title: body.title,
-        body: body.body,
-        link: body.link,
+    to: token,
+  };
+
+  axios
+    .post("https://fcm.googleapis.com/fcm/send", reqBody, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `key=${authKey}`,
       },
-      to: token,
-    },
-  });
+    })
+    .then((res) => {
+      console.log("Note Res : ", res);
+    })
+    .catch((err) => {
+      console.log("Note Err : ", err);
+    });
+}
+
+export function createNote(body) {
+  let note = {
+    title: body.title,
+    body: body.body,
+    click_action: body.click_action,
+    reciever: body.recieverId,
+    recieverType: body.recieverType,
+    date: body.date,
+  };
+  Notification.create(note);
 }
 
 export default notifyRouter;

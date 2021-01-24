@@ -1,6 +1,6 @@
 import express from "express";
 import Lecture from "../models/lecture.js";
-import { sendNotification } from "./notify.js";
+import { createNote, sendNotification } from "./notify.js";
 
 const lectureRouter = express.Router();
 
@@ -49,12 +49,20 @@ lectureRouter.post("/join", (req, res) => {
         let noteBody = {
           title: "Join Request",
           body: `New Student Ask To Join ${updatedDoc.name} Lecture`,
-          link: `lecture/${lectureId}`,
+          click_action: `lecture/${lectureId}`,
+          recieverId: teacher._id,
+          recieverType: "Teacher",
+          date: Date.now(),
         };
-        let token = teacher.webDeviceToken
-          ? teacher.webDeviceToken
-          : teacher.mobileDeviceToken;
-        sendNotification(noteBody, token);
+        // let token = teacher.webDeviceToken
+        //   ? teacher.webDeviceToken
+        //   : teacher.mobileDeviceToken;
+        if (teacher.mobileDeviceToken)
+          sendNotification(noteBody, teacher.mobileDeviceToken);
+        if (teacher.webDeviceToken)
+          sendNotification(noteBody, teacher.webDeviceToken);
+
+        createNote(noteBody);
         res.status(200).json({
           message: "Student Joined to Lectrue Successfully",
           lectuerData: updatedDoc,

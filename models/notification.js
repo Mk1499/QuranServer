@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 
 const notificationSchema = mongoose.Schema({
-  body:{
+  body: {
     type: String,
-    required: true
+    required: true,
   },
-  title:{
+  title: {
     type: String,
-    required: true
-  },  
-  link:{
+    required: true,
+  },
+  click_action: {
     type: String,
-    required: true
+    required: true,
   },
   reciever: {
     type: mongoose.Schema.Types.ObjectId,
@@ -22,14 +22,12 @@ const notificationSchema = mongoose.Schema({
   },
   recieverToken: {
     type: String,
+    required: false,
+  },
+  date: {
+    type: String,
     required: true,
   },
-  date:{
-      type:String,
-      required:true
-  },
-
-
 });
 
 export default mongoose.model("Notification", notificationSchema);
