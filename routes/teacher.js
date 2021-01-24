@@ -1,5 +1,7 @@
 import express from "express";
 import Teacher from "../models/teacher.js";
+import Lecture from "../models/lecture.js";
+
 import {
   studentActiveEnrollments,
   teacherActiveEnrollments,
@@ -172,6 +174,22 @@ teacherRouter.get("/:id/samples", (req, res) => {
           data = data["samples"];
         }
         res.status(200).json(data || []);
+      }
+    });
+});
+
+teacherRouter.get("/:id/lectures", (req, res) => {
+  Lecture.find({ teacher: req.params.id })
+    .populate({
+      path: "students",
+      model: "Student",
+    })
+    .populate("teacher")
+    .exec((err, data) => {
+      if (err) {
+        res.status(400).json({ message: "Can't list Lectures", error: err });
+      } else {
+        res.status(200).json(data);
       }
     });
 });
