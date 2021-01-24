@@ -21,7 +21,7 @@ const lectureSchema = mongoose.Schema({
     type: String,
     required: false,
   },
-  duaration: {
+  duration: {
     type:  Number,
     default: 60,
   },
