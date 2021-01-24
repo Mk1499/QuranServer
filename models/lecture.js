@@ -13,13 +13,27 @@ const lectureSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  arName: {
+    type: String,
+    required: false,
+  },
   description: {
     type: String,
     required: false,
   },
-  time: {
+  duaration: {
+    type:  Number,
+    default: 60,
+  },
+  coverURL: {
     type: String,
-    required: true,
+  },
+  time: {
+    type: Date,
+    default: new Date(),
+  },
+  state: {
+    type: String,
   },
 });
 

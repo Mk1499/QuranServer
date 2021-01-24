@@ -49,7 +49,7 @@ lectureRouter.post("/join", (req, res) => {
         let noteBody = {
           title: "Join Request",
           body: `New Student Ask To Join ${updatedDoc.name} Lecture`,
-          click_action: `lecture/${lectureId}`,
+          click_action: `lectures/${lectureId}`,
           recieverId: teacher._id,
           recieverType: "Teacher",
           date: Date.now(),
@@ -71,4 +71,40 @@ lectureRouter.post("/join", (req, res) => {
     });
 });
 
+lectureRouter.get("/teacher/:id", (req, res) => {
+  Lecture.find({ teacher: req.params.id })
+    .populate({
+      path: "students",
+      model: "Student",
+    })
+    .populate("teacher")
+    .exec((err, data) => {
+      if (err) {
+        res.status(400).json({ message: "Can't list Lectures", error: err });
+      } else {
+        res.status(200).json(data);
+      }
+    });
+});
+
+lectureRouter.post("/changeState", (req, res) => {
+  let { lectureId, newState } = req.body;
+  Lecture.updateOne(
+    { _id: lectureId },
+    {
+      $set: {
+        state: newState,
+      },
+    },
+    (err, data) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "Can't Update Lecture State", error: err });
+      } else {
+        res.status(200).json(data);
+      }
+    }
+  );
+});
 export default lectureRouter;
