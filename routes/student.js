@@ -23,16 +23,13 @@ studentRouter.post("/add", (req, res) => {
     newStudent["mobileDeviceToken"] = mobileToken;
   }
 
-  Student.create(
-    newStudent,
-    (err, student) => {
-      if (err) {
-        res.status(400).json({ message: "Student Not Created", error: err });
-      } else {
-        res.status(200).json({ message: "Student Created", student });
-      }
+  Student.create(newStudent, (err, student) => {
+    if (err) {
+      res.status(400).json({ message: "Student Not Created", error: err });
+    } else {
+      res.status(200).json({ message: "Student Created", student });
     }
-  );
+  });
 });
 
 studentRouter.get("/", (req, res) => {
@@ -220,6 +217,20 @@ studentRouter.post("/unenroll", (req, res) => {
         }
       }
     );
+});
+
+studentRouter.post("/logout", (req, res) => {
+  let { studentId, platform } = req.body;
+  if (platform === "web") {
+    Student.findByIdAndUpdate(studentId, {
+      $set: { webDeviceToken: null },
+    });
+  } else if (platform === "mobile") {
+    Student.findByIdAndUpdate(studentId, {
+      $set: { mobileDeviceToken: null },
+    });
+  }
+  res.status(200).json({ message: "Logout Successfully" });
 });
 
 export default studentRouter;

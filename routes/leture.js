@@ -1,6 +1,7 @@
 import express from "express";
 import Lecture from "../models/lecture.js";
 import { createNote, sendNotification } from "./notify.js";
+import mongoose from "mongoose";
 
 const lectureRouter = express.Router();
 
@@ -83,19 +84,24 @@ lectureRouter.post("/join", (req, res) => {
 });
 
 lectureRouter.get("/teacher/:id", (req, res) => {
-  Lecture.find({ teacher: req.params.id })
-    // .populate({
-    //   path: "students",
-    //   model: "Student",
-    // })
-    // .populate("teacher")
-    .exec((err, data) => {
-      if (err) {
-        res.status(400).json({ message: "Can't list Lectures", error: err });
-      } else {
-        res.status(200).json(data);
-      }
-    });
+  Lecture.find({ teacher: req.params.id }).exec((err, data) => {
+    if (err) {
+      res.status(400).json({ message: "Can't list Lectures", error: err });
+    } else {
+      res.status(200).json(data);
+    }
+  });
+});
+
+lectureRouter.get("/student/:id", (req, res) => {
+  Lecture.find({
+    students: mongoose.Types.ObjectId(req.params.id),
+  }).exec((err, data) => {
+    if (err) {
+      res.status(400).json({ message: "Can't list Lectures", error: err });
+    }
+    res.status(200).json(data);
+  });
 });
 
 lectureRouter.post("/changeState", (req, res) => {

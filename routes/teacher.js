@@ -194,4 +194,17 @@ teacherRouter.get("/:id/lectures", (req, res) => {
     });
 });
 
+teacherRouter.post("/logout", (req, res) => {
+  let { teacherId, platform } = req.body;
+  if (platform === "web") {
+    Teacher.findByIdAndUpdate(teacherId, {
+      $set: { webDeviceToken: null },
+    });
+  } else if (platform === "mobile") {
+    Teacher.findByIdAndUpdate(teacherId, {
+      $set: { mobileDeviceToken: null },
+    });
+  }
+  res.status(200).json({message:"Logout Successfully"})
+});
 export default teacherRouter;
