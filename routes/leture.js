@@ -5,7 +5,15 @@ import { createNote, sendNotification } from "./notify.js";
 const lectureRouter = express.Router();
 
 lectureRouter.post("/add", (req, res) => {
-  let { name, teacher, time, description, duration,coverURL , arName} = req.body;
+  let {
+    name,
+    teacher,
+    time,
+    description,
+    duration,
+    coverURL,
+    arName,
+  } = req.body;
   let newLecture = {
     name,
     teacher,
@@ -14,8 +22,7 @@ lectureRouter.post("/add", (req, res) => {
     created_at: Date.now(),
     duration,
     coverURL,
-    arName
-
+    arName,
   };
   Lecture.create(newLecture, (err, lec) => {
     if (err) {
@@ -77,11 +84,11 @@ lectureRouter.post("/join", (req, res) => {
 
 lectureRouter.get("/teacher/:id", (req, res) => {
   Lecture.find({ teacher: req.params.id })
-    .populate({
-      path: "students",
-      model: "Student",
-    })
-    .populate("teacher")
+    // .populate({
+    //   path: "students",
+    //   model: "Student",
+    // })
+    // .populate("teacher")
     .exec((err, data) => {
       if (err) {
         res.status(400).json({ message: "Can't list Lectures", error: err });
@@ -111,4 +118,21 @@ lectureRouter.post("/changeState", (req, res) => {
     }
   );
 });
+
+lectureRouter.get("/:id", (req, res) => {
+  Lecture.find({ _id: req.params.id })
+    .populate({
+      path: "students",
+      model: "Student",
+    })
+    .populate("teacher")
+    .exec((err, data) => {
+      if (err) {
+        res.status(400).json({ message: "Can't get Lecture", error: err });
+      } else {
+        res.status(200).json(data);
+      }
+    });
+});
+
 export default lectureRouter;
