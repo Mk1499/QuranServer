@@ -5,7 +5,7 @@ import { createNote, sendNotification } from "./notify.js";
 const lectureRouter = express.Router();
 
 lectureRouter.post("/add", (req, res) => {
-  let { name, teacher, time, description, duration } = req.body;
+  let { name, teacher, time, description, duration,coverURL } = req.body;
   let newLecture = {
     name,
     teacher,
@@ -13,6 +13,8 @@ lectureRouter.post("/add", (req, res) => {
     description,
     created_at: Date.now(),
     duration,
+    coverURL
+
   };
   Lecture.create(newLecture, (err, lec) => {
     if (err) {
