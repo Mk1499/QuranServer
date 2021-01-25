@@ -120,7 +120,7 @@ lectureRouter.post("/changeState", (req, res) => {
 });
 
 lectureRouter.get("/:id", (req, res) => {
-  Lecture.find({ _id: req.params.id })
+  Lecture.findOne({ _id: req.params.id })
     .populate({
       path: "students",
       model: "Student",
