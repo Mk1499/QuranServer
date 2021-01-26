@@ -94,6 +94,9 @@ teacherRouter.post("/login", (req, res) => {
             }
           );
         }
+        if (!mobileToken && !webToken) {
+          res.status(200).json({ teacher: data });
+        }
       } else {
         res.status(404).json({ message: "Wrong email or password" });
       }

@@ -77,7 +77,7 @@ studentRouter.get("/:id/teachers", (req, res) => {
 
 studentRouter.post("/login", (req, res) => {
   let { email, password, mobileToken, webToken } = req.body;
-
+  console.log("Lg bdy : ", req.body);
   if (email && password) {
     let enhEmail = email.toLowerCase();
 
@@ -130,6 +130,9 @@ studentRouter.post("/login", (req, res) => {
                 }
               }
             );
+          }
+          if (!mobileToken && !webToken) {
+            res.status(200).json({ student: data });
           }
         } else {
           res.status(404).json({ message: "Wrong email or password" });
