@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import http from "http";
+import {Server} from 'socket.io';
 
 import studentRouter from "./routes/student.js";
 import teacherRouter from "./routes/teacher.js";
@@ -15,6 +16,7 @@ import lectureRouter from "./routes/leture.js";
 
 const app = express();
 const server = http.Server(app);
+const io = new Server(server);
 
 let mongoDB =
   "mongodb+srv://MK:123456789mK14@cluster0-c4uwc.gcp.mongodb.net/Quran?retryWrites=true&w=majority";
@@ -25,11 +27,18 @@ mongoose.connect(mongoDB, { useNewUrlParser: true }).catch((err) => {
 mongoose.connection.once("open", () => {
   console.log("connected to Database");
 });
+
+
+
 app.get("/", (req, res) => {
   res.send("Welcome in Quran Dev Server");
 });
 app.use(bodyParser.json());
 app.use(cors());
+
+io.on("connection", (socket) => {
+  console.log("New connection : ", socket);
+});
 
 app.use("/student", studentRouter);
 app.use("/teacher", teacherRouter);
