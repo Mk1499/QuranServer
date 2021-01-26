@@ -146,6 +146,8 @@ export function sendNotification(body, token) {
       title: body.title,
       body: body.body,
       click_action: body.click_action,
+      route: body.route,
+      data: body.data,
     },
     to: token,
   };

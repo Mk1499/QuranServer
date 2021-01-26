@@ -65,6 +65,8 @@ lectureRouter.post("/join", (req, res) => {
           recieverId: teacher._id,
           recieverType: "Teacher",
           date: Date.now(),
+          route: "lectures",
+          data: lectureId,
         };
         // let token = teacher.webDeviceToken
         //   ? teacher.webDeviceToken

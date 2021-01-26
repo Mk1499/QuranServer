@@ -28,6 +28,14 @@ const notificationSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  route: {
+    type: String,
+    required: false,
+  },
+  data: {
+    type: String,
+    required: false,
+  },
 });
 
 export default mongoose.model("Notification", notificationSchema);
