@@ -222,13 +222,30 @@ studentRouter.post("/unenroll", (req, res) => {
 studentRouter.post("/logout", (req, res) => {
   let { studentId, platform } = req.body;
   if (platform === "web") {
-    Student.findByIdAndUpdate(studentId, {
-      $set: { webDeviceToken: null },
-    });
+    Student.findByIdAndUpdate(
+      studentId,
+      {
+        $set: { webDeviceToken: null },
+      },
+      (err, data) => {
+        if (err) {
+          console.log("err : ", err);
+        }
+      }
+    );
   } else if (platform === "mobile") {
-    Student.findByIdAndUpdate(studentId, {
-      $set: { mobileDeviceToken: null },
-    });
+    console.log("platform : ", platform);
+    Student.findByIdAndUpdate(
+      studentId,
+      {
+        $set: { mobileDeviceToken: null },
+      },
+      (err) => {
+        if (err) {
+          console.log("logout err : ", err);
+        }
+      }
+    );
   }
   res.status(200).json({ message: "Logout Successfully" });
 });
