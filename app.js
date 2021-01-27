@@ -22,7 +22,7 @@ const io = new Server(server, {
       "https://localhost:4200",
       "https://quranak-4a78a.web.app",
       "https://quranmk.herokuapp.com",
-      "https://192.168.1.8:400",
+      "https://192.168.1.8:4200",
       "*"
     ],
     methods: ["GET", "POST"],
