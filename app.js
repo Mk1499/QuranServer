@@ -49,10 +49,10 @@ app.use(cors());
 io.on("connection", (socket) => {
   console.log("Socket Connected!!!");
 
-  socket.on("student-join-room", (roomID, studentID) => {
+  socket.on("student-join-room", (roomID, studentID,studentName) => {
     console.log("new student ", studentID, "connected to room : ", roomID);
     socket.join(roomID);
-    socket.to(roomID).broadcast.emit("new-student", studentID);
+    socket.to(roomID).broadcast.emit("new-student", studentID , studentName);
   });
 
   socket.on("lecture-teacher-id",(teacherID,roomID) => {
