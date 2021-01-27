@@ -22,6 +22,7 @@ const io = new Server(server, {
       "http://localhost:4200",
       "https://quranak-4a78a.web.app",
       "https://quranmk.herokuapp.com",
+      "http://192.168.1.8:400"
     ],
     methods: ["GET", "POST"],
     credentials: true,
@@ -46,9 +47,21 @@ app.use(cors());
 
 io.on("connection", (socket) => {
   console.log("Socket Connected!!!");
-  socket.on("join-room", (roomID, userID) => {
-    console.log("user with id : ", userID);
-    console.log("Join to room with id : ", roomID);
+
+  socket.on("student-join-room", (roomID, studentID) => {
+    console.log("new student ", studentID, "connected to room : ", roomID);
+    socket.join(roomID);
+    socket.to(roomID).broadcast.emit("new-student", studentID);
+  });
+
+  socket.on("lecture-teacher-id",(teacherID,roomID) => {
+    console.log("lecture-teacher-id : ",teacherID);
+    socket.to(roomID).broadcast.emit("define-teacher-id",teacherID);
+  })
+
+  socket.on("teacher-join-room", (roomID, teacherID) => {
+    socket.join(roomID);
+    socket.to(roomID).broadcast.emit("new-teacher", teacherID);
   });
 });
 
