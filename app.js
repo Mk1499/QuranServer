@@ -18,7 +18,13 @@ const app = express();
 const server = http.Server(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: [
+      "https://localhost:4200",
+      "https://quranak-4a78a.web.app",
+      "https://quranmk.herokuapp.com",
+      "https://192.168.1.4:4200",
+      "*",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -34,6 +40,10 @@ mongoose.connection.once("open", () => {
   console.log("connected to Database");
 });
 
+app.use("*",(req,res,next)=>{
+  console.log("REQ : ",req);
+  next();
+})
 app.get("/", (req, res) => {
   res.send("Welcome in Quran Dev Server");
 });
