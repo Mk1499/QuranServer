@@ -42,10 +42,10 @@ mongoose.connection.once("open", () => {
   console.log("connected to Database");
 });
 
-app.use("*",(req,res,next)=>{
-  console.log("REQ : ",req.rawHeaders);
-  next();
-})
+// app.use("*",(req,res,next)=>{
+//   console.log("REQ : ",req.rawHeaders);
+//   next();
+// })
 app.get("/", (req, res) => {
   res.send("Welcome in Quran Dev Server");
 });
