@@ -23,7 +23,7 @@ const io = new Server(server, {
       "https://quranak-4a78a.web.app",
       "https://quranmk.herokuapp.com",
       "https://192.168.1.4:4200",
-      "*"
+      "*",
     ],
     methods: ["GET", "POST"],
     credentials: true,
@@ -49,21 +49,26 @@ app.use(cors());
 io.on("connection", (socket) => {
   console.log("Socket Connected!!!");
 
-  socket.on("student-join-room", (roomID, studentID,studentName) => {
+  socket.on("student-join-room", (roomID, studentID, studentName) => {
     console.log("new student ", studentID, "connected to room : ", roomID);
     socket.join(roomID);
-    socket.to(roomID).broadcast.emit("new-student", studentID , studentName);
+    socket.to(roomID).broadcast.emit("new-student", studentID, studentName);
   });
 
-  socket.on("lecture-teacher-id",(teacherID,roomID) => {
-    console.log("lecture-teacher-id : ",teacherID);
-    socket.to(roomID).broadcast.emit("define-teacher-id",teacherID);
-  })
+  socket.on("lecture-teacher-id", (teacherID, roomID) => {
+    console.log("lecture-teacher-id : ", teacherID);
+    socket.to(roomID).broadcast.emit("define-teacher-id", teacherID);
+  });
 
   socket.on("teacher-join-room", (roomID, teacherID) => {
     socket.join(roomID);
     socket.to(roomID).broadcast.emit("new-teacher", teacherID);
   });
+
+  socket.on("student-quite",(streamID , roomID) => {
+    socket.to(roomID).broadcast.emit("remove-stream",streamID);
+  })
+
 });
 
 app.use("/student", studentRouter);
