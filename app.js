@@ -23,6 +23,8 @@ const io = new Server(server, {
       "https://quranak-4a78a.web.app",
       "https://quranmk.herokuapp.com",
       "https://192.168.1.4:4200",
+      "http://localhost",
+      "quranmkserver.herokuapp.com",
       "*",
     ],
     methods: ["GET", "POST"],
@@ -41,7 +43,7 @@ mongoose.connection.once("open", () => {
 });
 
 app.use("*",(req,res,next)=>{
-  console.log("REQ : ",req);
+  console.log("REQ : ",req.rawHeaders);
   next();
 })
 app.get("/", (req, res) => {
