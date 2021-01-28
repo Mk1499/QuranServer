@@ -16,7 +16,7 @@ import lectureRouter from "./routes/leture.js";
 
 const app = express();
 const server = http.Server(app);
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: [
       "https://localhost:4200",
@@ -73,6 +73,10 @@ io.on("connection", (socket) => {
 
   socket.on("student-quite",(streamID , roomID) => {
     socket.to(roomID).broadcast.emit("remove-stream",streamID);
+  })
+
+  socket.on("finish-lecture",(roomID) => {
+    socket.to(roomID).broadcast.emit("lecture-finished")
   })
 
 });

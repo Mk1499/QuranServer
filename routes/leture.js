@@ -143,4 +143,15 @@ lectureRouter.get("/:id", (req, res) => {
     });
 });
 
+lectureRouter.post("/finish",(req,res) => {
+  let lectureID = req.body.id; 
+  Lecture.updateOne({_id:lectureID},{$set:{state:'finished'}} , (err) => {
+    if (err){
+      res.status(400).json({message:"cann't finish lecture"}); 
+    } else {
+      res.status(200).json({message:"Lecture Finished"});
+    }
+  })
+})
+
 export default lectureRouter;
