@@ -127,6 +127,27 @@ lectureRouter.post("/changeState", (req, res) => {
   );
 });
 
+lectureRouter.post("/changeAya", (req, res) => {
+  let { lectureId, newAya } = req.body;
+  Lecture.updateOne(
+    { _id: lectureId },
+    {
+      $set: {
+        aya: newAya,
+      },
+    },
+    (err, data) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "Can't Update Lecture Aya", error: err });
+      } else {
+        res.status(200).json(data);
+      }
+    }
+  );
+});
+
 lectureRouter.get("/:id", (req, res) => {
   Lecture.findOne({ _id: req.params.id })
     .populate({
@@ -143,13 +164,13 @@ lectureRouter.get("/:id", (req, res) => {
     });
 });
 
-lectureRouter.post("/finish",(req,res) => {
-  let lectureID = req.body.id; 
-  Lecture.updateOne({_id:lectureID},{$set:{state:'finished'}} , (err) => {
-    if (err){
-      res.status(400).json({message:"cann't finish lecture"}); 
+lectureRouter.post("/finish", (req, res) => {
+  let lectureID = req.body.id;
+  Lecture.updateOne({ _id: lectureID }, { $set: { state: 'finished' } }, (err) => {
+    if (err) {
+      res.status(400).json({ message: "cann't finish lecture" });
     } else {
-      res.status(200).json({message:"Lecture Finished"});
+      res.status(200).json({ message: "Lecture Finished" });
     }
   })
 })

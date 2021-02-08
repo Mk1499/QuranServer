@@ -22,7 +22,7 @@ const lectureSchema = mongoose.Schema({
     required: false,
   },
   duration: {
-    type:  Number,
+    type: Number,
     default: 60,
   },
   coverURL: {
@@ -34,7 +34,11 @@ const lectureSchema = mongoose.Schema({
   },
   state: {
     type: String,
+    default: 'upcoming'
   },
+  aya: {
+    type: String,
+  }
 });
 
 export default mongoose.model("Lecture", lectureSchema);
