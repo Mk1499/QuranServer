@@ -14,6 +14,8 @@ import enrollRouter from "./routes/enroll.js";
 import notifyRouter from "./routes/notify.js";
 import lectureRouter from "./routes/leture.js";
 
+import {socketHandler} from './socket-handler.js';
+
 const app = express();
 const server = http.Server(app);
 export const io = new Server(server, {
@@ -56,30 +58,7 @@ app.use(cors());
 io.on("connection", (socket) => {
   console.log("Socket Connected!!!");
 
-  socket.on("student-join-room", (roomID, studentID, studentName) => {
-    console.log("new student ", studentID, "connected to room : ", roomID);
-    socket.join(roomID);
-    socket.to(roomID).broadcast.emit("new-student", studentID, studentName);
-  });
-
-  socket.on("lecture-teacher-id", (teacherID, roomID) => {
-    console.log("lecture-teacher-id : ", teacherID);
-    socket.to(roomID).broadcast.emit("define-teacher-id", teacherID);
-  });
-
-  socket.on("teacher-join-room", (roomID, teacherID) => {
-    socket.join(roomID);
-    socket.to(roomID).broadcast.emit("new-teacher", teacherID);
-  });
-
-  socket.on("student-quite",(streamID , roomID) => {
-    socket.to(roomID).broadcast.emit("remove-stream",streamID);
-  })
-
-  socket.on("finish-lecture",(roomID) => {
-    socket.to(roomID).broadcast.emit("lecture-finished")
-  })
-
+  socketHandler(socket);
 });
 
 app.use("/student", studentRouter);
