@@ -1,5 +1,6 @@
 export const socketHandler = (socket) => {
 
+
     socket.on("student-join-room", (roomID, studentID, studentName) => {
         console.log("new student ", studentID, "connected to room : ", roomID);
         socket.join(roomID);
@@ -26,6 +27,32 @@ export const socketHandler = (socket) => {
 
     socket.on("teacherChangeAya", (roomID, chagedAya) => {
         socket.to(roomID).broadcast.emit("newAya", chagedAya)
+    })
+
+
+
+    socket.on("teacherJoin", (lectureID, teacherID) => {
+        socket.join(lectureID);
+        socket.to(lectureID).broadcast.emit("teacherJoined", teacherID)
+    })
+
+
+    socket.on("studentJoin", (lectureID, studentID) => {
+        socket.join(lectureID);
+        socket.to(lectureID).broadcast.emit("studentJoined", studentID)
+    })
+
+
+    socket.on("bcStudentPeerID", (lectureID, studentID, avatar) => {
+        socket.to(lectureID).broadcast.emit("studentPeerID", studentID, avatar)
+    })
+
+    socket.on("bcTeacherPeerID", (lectureID, teacherID, avatar) => {
+        socket.to(lectureID).broadcast.emit("teacherPeerID", teacherID, avatar)
+    })
+
+    socket.on("sendMessage", (lectureID, msgContent, senderName) => {
+        socket.to(lectureID).broadcast.emit("newMsg", msgContent, senderName)
     })
 
 
