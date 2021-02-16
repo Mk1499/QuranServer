@@ -27,6 +27,7 @@ export const io = new Server(server, {
       "https://quranak-4a78a.web.app",
       "https://quranmk.herokuapp.com",
       "https://192.168.1.4:4200",
+      "http://192.168.1.10:8100",
       "http://localhost",
       "quranmkserver.herokuapp.com",
       "*",
