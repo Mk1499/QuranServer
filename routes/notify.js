@@ -149,6 +149,21 @@ export function sendNotification(body, token) {
       route: body.route,
       data: body.data,
     },
+
+    notification: {
+      sound: "default",
+      body: body.body,
+      title: body.title,
+      content_available: true,
+      priority: "high",
+    },
+    data: {
+      sound: "default",
+      content_available: true,
+      priority: "high",
+      url: body.url,
+      param: body.param
+    },
     to: token,
   };
 
