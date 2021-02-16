@@ -23,6 +23,7 @@ export const io = new Server(server, {
     origin: [
       "https://localhost:4200",
       "http://localhost:4200",
+      "http://localhost:8100",
       "https://quranak-4a78a.web.app",
       "https://quranmk.herokuapp.com",
       "https://192.168.1.4:4200",
