@@ -221,6 +221,7 @@ export const teacherUnEnrollmentsGrouped = (req, res) => {
 };
 // Complete
 export const allEnrollments = (req, res, external = false) => {
+  console.log("All Enrolls called");
   Enroll.find({}, (err, data) => {
     if (err) {
       if (!external)

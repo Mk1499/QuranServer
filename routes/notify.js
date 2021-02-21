@@ -138,6 +138,7 @@ function connectMobileTokenToAdmin(userId, token, res) {
 }
 
 export function sendNotification(body, token) {
+  console.log("Sending New Push notification : " ,body );
   let authKey =
     "AAAAy2xgfNM:APA91bF5y18uU2sCqRn3H5-7CWmiuYsR3ydTqFyxn43iHUHI_59LWHSJAvXHf-f-QGM72DPjLrGBZAjg3b14MwfTCJsRAhzRiUllGumNrES925brXLwYm03DzE7WHrlgPTJduaST7Pm4";
 
@@ -161,8 +162,8 @@ export function sendNotification(body, token) {
       sound: "default",
       content_available: true,
       priority: "high",
-      url: body.url,
-      param: body.param
+      url: body.data.url,
+      param: body.data.param
     },
     to: token,
   };

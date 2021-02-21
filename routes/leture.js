@@ -1,5 +1,6 @@
 import express from "express";
 import Lecture from "../models/lecture.js";
+import Teacher from "../models/teacher.js";
 import { createNote, sendNotification } from "./notify.js";
 import mongoose from "mongoose";
 
@@ -66,15 +67,22 @@ lectureRouter.post("/join", (req, res) => {
           recieverType: "Teacher",
           date: Date.now(),
           route: "lectures",
-          data: lectureId,
+          data: {
+            url: "teacher/lectures",
+            param: lectureId,
+          },
         };
         // let token = teacher.webDeviceToken
         //   ? teacher.webDeviceToken
         //   : teacher.mobileDeviceToken;
-        if (teacher.mobileDeviceToken)
+        if (teacher.mobileDeviceToken) {
+          console.log("Teacher has a mobile token");
           sendNotification(noteBody, teacher.mobileDeviceToken);
-        if (teacher.webDeviceToken)
+        }
+        if (teacher.webDeviceToken) {
+          console.log("Teacher has a web token");
           sendNotification(noteBody, teacher.webDeviceToken);
+        }
 
         createNote(noteBody);
         res.status(200).json({
@@ -82,6 +90,31 @@ lectureRouter.post("/join", (req, res) => {
           lectuerData: updatedDoc,
         });
       }
+    });
+});
+
+lectureRouter.post("/leave", (req, res) => {
+  let { teacherID, studentName, lectureName } = req.body;
+  Teacher.findById(teacherID)
+    .then((teacherData) => {
+      let body = {
+        title: `Student ${studentName} is leave lecture ${lectureName}`,
+      };
+      if (teacherData.webDeviceToken) {
+        sendNotification(body, teacherData.webDeviceToken);
+      }
+
+      if (teacherData.mobileDeviceToken) {
+        sendNotification(body, teacherData.mobileDeviceToken);
+      }
+
+      res.status(200);
+    })
+    .catch((err) => {
+      console.log("Sending Leave Notification Err : ", err);
+      res.send(400).json({
+        message: "can't send leave message : " + err,
+      });
     });
 });
 
@@ -166,13 +199,17 @@ lectureRouter.get("/:id", (req, res) => {
 
 lectureRouter.post("/finish", (req, res) => {
   let lectureID = req.body.id;
-  Lecture.updateOne({ _id: lectureID }, { $set: { state: 'finished' } }, (err) => {
-    if (err) {
-      res.status(400).json({ message: "cann't finish lecture" });
-    } else {
-      res.status(200).json({ message: "Lecture Finished" });
+  Lecture.updateOne(
+    { _id: lectureID },
+    { $set: { state: "finished" } },
+    (err) => {
+      if (err) {
+        res.status(400).json({ message: "cann't finish lecture" });
+      } else {
+        res.status(200).json({ message: "Lecture Finished" });
+      }
     }
-  })
-})
+  );
+});
 
 export default lectureRouter;
