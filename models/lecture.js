@@ -1,8 +1,12 @@
 import mongoose from "mongoose";
 
 const lectureSchema = mongoose.Schema({
-  students: {
-    type: [mongoose.Schema.Types.ObjectId],
+  // students: {
+  //   type: [mongoose.Schema.Types.ObjectId],
+  //   ref: "Student",
+  // },
+  student: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
   },
   teacher: {
@@ -34,11 +38,11 @@ const lectureSchema = mongoose.Schema({
   },
   state: {
     type: String,
-    default: 'upcoming'
+    default: "upcoming",
   },
   aya: {
     type: String,
-  }
+  },
 });
 
 export default mongoose.model("Lecture", lectureSchema);
