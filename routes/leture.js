@@ -36,6 +36,7 @@ lectureRouter.post("/add", (req, res) => {
 });
 
 lectureRouter.get("/all", (req, res) => {
+  console.log("REQ : ", req )
   Lecture.find({})
     .populate("teacher students student")
     .exec((err, data) => {
